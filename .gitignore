@@ -1,0 +1,46 @@
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+
+# Go build artifacts
+backend/backend
+backend/flowpilot
+backend/server
+flowpilot
+
+# TLS certificates (generate your own)
+*.crt
+*.key
+*.pem
+
+# Node
+frontend/node_modules/
+frontend/dist/
+node_modules/
+
+# Databases and logs
+*.db
+*.log
+logs/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PID files
+.pids/
+
+# Claude Code / AI tooling
+.claude/
+
+# Session transcripts
+*.txt
+!docs/*.txt
