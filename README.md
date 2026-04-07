@@ -1,3 +1,6 @@
+[![CI](https://github.com/divinedev111/flowpilot/actions/workflows/ci.yml/badge.svg)](https://github.com/divinedev111/flowpilot/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 # FlowPilot
 
 A self-hosted portfolio operations platform that aggregates holdings from Charles Schwab, Coinbase, and Polymarket into a single dashboard. Tracks changes over time via snapshots, fires configurable alerts when thresholds are crossed, and uses Claude AI to explain what changed.
