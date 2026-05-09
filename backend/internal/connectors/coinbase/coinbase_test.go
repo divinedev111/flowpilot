@@ -2,6 +2,8 @@ package coinbase
 
 import (
 	"context"
+	"crypto/ed25519"
+	"crypto/rand"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -14,38 +16,61 @@ import (
 func TestFetchPositions(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/v2/accounts" {
-			json.NewEncoder(w).Encode(AccountsResponse{
-				Data: []Account{
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"data": []map[string]interface{}{
 					{
-						ID:       "acct-1",
-						Currency: Currency{Code: "BTC", Name: "Bitcoin"},
-						Balance:  Balance{Amount: "1.5", Currency: "BTC"},
+						"id": "acct-1",
+						"currency": map[string]interface{}{
+							"code": "BTC",
+							"name": "Bitcoin",
+						},
+						"balance": map[string]interface{}{
+							"amount":   "1.5",
+							"currency": "BTC",
+						},
 					},
 					{
-						ID:       "acct-2",
-						Currency: Currency{Code: "ETH", Name: "Ethereum"},
-						Balance:  Balance{Amount: "10.0", Currency: "ETH"},
+						"id": "acct-2",
+						"currency": map[string]interface{}{
+							"code": "ETH",
+							"name": "Ethereum",
+						},
+						"balance": map[string]interface{}{
+							"amount":   "10.0",
+							"currency": "ETH",
+						},
 					},
 				},
 			})
 			return
 		}
 		if r.URL.Path == "/v2/prices/BTC-USD/spot" {
-			json.NewEncoder(w).Encode(PriceResponse{Data: PriceData{Amount: "60000.00"}})
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"data": map[string]interface{}{
+					"amount": "60000.00",
+				},
+			})
 			return
 		}
 		if r.URL.Path == "/v2/prices/ETH-USD/spot" {
-			json.NewEncoder(w).Encode(PriceResponse{Data: PriceData{Amount: "3000.00"}})
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"data": map[string]interface{}{
+					"amount": "3000.00",
+				},
+			})
 			return
 		}
 		w.WriteHeader(404)
 	}))
 	defer server.Close()
 
+	_, privKey, err := ed25519.GenerateKey(rand.Reader)
+	require.NoError(t, err)
+
 	c := &Client{
 		baseURL:    server.URL,
-		apiKey:     "test-key",
-		apiSecret:  "test-secret",
+		apiKeyID:   "test-key-id",
+		privateKey: privKey,
 		httpClient: server.Client(),
 	}
 
